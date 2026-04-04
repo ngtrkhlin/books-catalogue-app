@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Books Catalogue</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <header>
+      <div class="header-content">
+        <h1>Discover Your Next Great Read</h1>
+        <p>Search millions of books and add them to your favorites.</p>
+        
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="Search by title, author, or keyword..." />
+          <button id="searchBtn">Find</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Results Section -->
+      <section class="results-section">
+        <h2>Search Results <span id="loadingText" class="hidden">Loading...</span></h2>
+        <div id="resultsGrid" class="book-grid">
+          <!-- Book cards will be injected here via JS -->
+        </div>
+      </section>
+
+      <!-- Favorites Section -->
+      <section class="favorites-section">
+        <h2>My Favorites</h2>
+        <div id="favoritesGrid" class="book-grid">
+          <!-- Favorite cards will be injected here via JS -->
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
