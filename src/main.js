@@ -1,5 +1,6 @@
 import { searchBooks } from './api/api.js';
 import { debounce } from './utils/utils.js';
+import { renderBooks } from './components/ui.js';
 
 const searchInput = document.getElementById('searchInput');
 const loadingText = document.getElementById('loadingText');
@@ -30,8 +31,7 @@ async function handleSearch(event) {
         return;
     }
 
-    console.log(results);
-    resultsGrid.innerHTML = `<p>Found ${results.length} books! Check the browser console.</p>`;
+    renderBooks(results, resultsGrid);
 }
 
 searchInput.addEventListener('input', debounce(handleSearch));
