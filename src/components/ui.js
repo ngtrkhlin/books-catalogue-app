@@ -1,14 +1,18 @@
+import { isFavorite } from '../utils/storage.js';
+
 export function renderBooks(books, container) {
     container.innerHTML = books.map(book => {
-        const author = book.author_name ? book.author_name.join(', ') : 'Unknown Author';
-        const year = book.first_publish_year ? book.first_publish_year : 'Unknown Year';
+        const bookId = book.key || book.id; 
+        
+        const author = book.author_name ? (Array.isArray(book.author_name) ? book.author_name.join(', ') : book.author_name) : book.author || 'Unknown Author';
+        const year = book.first_publish_year ? book.first_publish_year : book.year || 'Unknown Year';
         
         const coverHtml = book.cover_i 
             ? `<img src="https://covers.openlibrary.org/b/id/${book.cover_i}.jpg" alt="${book.title} cover" class="book-cover" />`
             : `<div class="no-cover">No cover</div>`;
 
         const bookData = {
-            id: book.key, 
+            id: bookId,
             title: book.title,
             author: author,
             year: year,
@@ -16,6 +20,10 @@ export function renderBooks(books, container) {
         };
         
         const safeBookData = JSON.stringify(bookData).replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+        
+        const favorited = isFavorite(bookId);
+        const btnText = favorited ? '❤️ Remove from Favorites' : '🤍 Add to Favorites';
+        const btnClass = favorited ? 'favorite-btn active' : 'favorite-btn';
 
         return `
             <div class="book-card">
@@ -24,7 +32,7 @@ export function renderBooks(books, container) {
                     <h3 class="book-title">${book.title}</h3>
                     <p class="book-author">${author}</p>
                     <p class="book-year">${year}</p>
-                    <button class="favorite-btn" data-book="${safeBookData}">🤍 Add to Favorites</button>
+                    <button class="${btnClass}" data-book="${safeBookData}">${btnText}</button>
                 </div>
             </div>
         `;
