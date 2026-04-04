@@ -1,44 +1,61 @@
 import { searchBooks } from './api/api.js';
 import { debounce } from './utils/utils.js';
-import { renderBooks } from './components/ui.js';
+import { renderBooks, renderFavoriteRows } from './components/ui.js';
 import { getFavorites, toggleFavorite } from './utils/storage.js';
 
+import './styles/variables.css';
+import './styles/base.css';
+import './styles/components.css';
+
+const savedTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', savedTheme);
+
 const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
 const loadingText = document.getElementById('loadingText');
 const resultsGrid = document.getElementById('resultsGrid');
 const favoritesGrid = document.getElementById('favoritesGrid');
+const favoritesCount = document.getElementById('favoritesCount');
 
-let currentSearchResults = []; 
-
-renderFavoritesSection();
+let currentSearchResults = [];
 
 function renderFavoritesSection() {
     const favorites = getFavorites();
-    if (favorites.length === 0) {
-        favoritesGrid.innerHTML = '<p>No favorites added yet. Search for a book above!</p>';
-    } else {
-        renderBooks(favorites, favoritesGrid);
+    const n = favorites.length;
+    if (favoritesCount) {
+        favoritesCount.textContent = `${n} book${n === 1 ? '' : 's'} saved`;
     }
+    renderFavoriteRows(favorites, favoritesGrid);
 }
 
+renderFavoritesSection();
+
 document.addEventListener('click', (event) => {
-    if (event.target.classList.contains('favorite-btn')) {
-        const bookData = JSON.parse(event.target.getAttribute('data-book'));
-        
-        toggleFavorite(bookData);
-        
-        renderFavoritesSection();
-        if (currentSearchResults.length > 0) {
-            renderBooks(currentSearchResults, resultsGrid);
-        }
+    const btn = event.target.closest('.favorite-heart, .favorite-row');
+    if (!btn || !btn.hasAttribute('data-book')) return;
+
+    const raw = btn.getAttribute('data-book');
+    let bookData;
+    try {
+        bookData = JSON.parse(raw);
+    } catch {
+        return;
+    }
+
+    toggleFavorite(bookData);
+
+    renderFavoritesSection();
+    if (currentSearchResults.length > 0) {
+        renderBooks(currentSearchResults, resultsGrid);
     }
 });
 
 async function handleSearch(event) {
-    const query = event.target.value.trim();
+    const query = (event.target?.value ?? searchInput.value).trim();
 
     if (!query) {
-        resultsGrid.innerHTML = '<p>Please enter a book title, author, or keyword.</p>';
+        resultsGrid.innerHTML =
+            '<p class="placeholder-msg">Please enter a book title, author, or keyword.</p>';
         currentSearchResults = [];
         return;
     }
@@ -51,13 +68,14 @@ async function handleSearch(event) {
     loadingText.classList.add('hidden');
 
     if (!results) {
-        resultsGrid.innerHTML = '<p style="color:red;">Network error. Please try again.</p>';
+        resultsGrid.innerHTML =
+            '<p class="error-msg">Network error. Please try again.</p>';
         currentSearchResults = [];
         return;
     }
 
     if (results.length === 0) {
-        resultsGrid.innerHTML = '<p>Nothing found for this query.</p>';
+        resultsGrid.innerHTML = '<p class="placeholder-msg">Nothing found for this query.</p>';
         currentSearchResults = [];
         return;
     }
@@ -67,3 +85,12 @@ async function handleSearch(event) {
 }
 
 searchInput.addEventListener('input', debounce(handleSearch));
+searchBtn?.addEventListener('click', () => handleSearch({ target: searchInput }));
+
+const themeToggle = document.getElementById('theme-toggle');
+themeToggle?.addEventListener('click', () => {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+});

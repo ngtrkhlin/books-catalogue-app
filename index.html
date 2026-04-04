@@ -3,39 +3,73 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simple Books Catalogue</title>
-    <link rel="stylesheet" href="/src/style.css">
+    <title>The Library — Book Catalogue</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Source+Sans+3:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <header>
-      <div class="header-content">
-        <h1>Discover Your Next Great Read</h1>
-        <p>Search millions of books and add them to your favorites.</p>
-        
-        <div class="search-container">
-          <input type="text" id="searchInput" placeholder="Search by title, author, or keyword..." />
-          <button id="searchBtn">Find</button>
+    <div class="app">
+      <header class="site-header">
+        <div class="header-top">
+          <div class="brand">
+            <span class="brand__icon" aria-hidden="true">📗</span>
+            <div class="brand__text">
+              <p class="brand__title">The Library</p>
+              <p class="brand__tagline">Discover your next favorite book</p>
+            </div>
+          </div>
+          <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle light or dark theme">
+            <span class="theme-toggle__icon" aria-hidden="true">🌓</span>
+          </button>
         </div>
-      </div>
-    </header>
 
-    <main>
-      <!-- Results Section -->
-      <section class="results-section">
-        <h2>Search Results <span id="loadingText" class="hidden">Loading...</span></h2>
-        <div id="resultsGrid" class="book-grid">
-          <!-- Book cards will be injected here via JS -->
+        <div class="hero">
+          <h1 class="hero__heading">Discover Your Next Great Read</h1>
+          <p class="hero__lede">
+            Search millions of books from Open Library. Save favorites to your shelf and pick them up anytime.
+          </p>
+          <div class="search-bar" role="search">
+            <span class="search-bar__icon" aria-hidden="true">🔍</span>
+            <input
+              type="search"
+              id="searchInput"
+              class="search-bar__input"
+              placeholder="Search for books by title or author..."
+              autocomplete="off"
+            />
+            <button type="button" id="searchBtn" class="search-bar__btn">Search</button>
+          </div>
         </div>
-      </section>
+      </header>
 
-      <!-- Favorites Section -->
-      <section class="favorites-section">
-        <h2>My Favorites</h2>
-        <div id="favoritesGrid" class="book-grid">
-          <!-- Favorite cards will be injected here via JS -->
-        </div>
-      </section>
-    </main>
+      <main class="main-layout">
+        <section class="results-section" aria-labelledby="results-heading">
+          <h2 id="results-heading" class="section-heading">
+            Search Results
+            <span id="loadingText" class="loading-text hidden" aria-live="polite">Loading…</span>
+          </h2>
+          <div id="resultsGrid" class="book-grid"></div>
+        </section>
+
+        <aside class="favorites-sidebar" aria-labelledby="favorites-heading">
+          <div class="favorites-sidebar__head">
+            <h2 id="favorites-heading" class="favorites-sidebar__title">
+              <span aria-hidden="true">💚</span> Favorites
+            </h2>
+            <p id="favoritesCount" class="favorites-sidebar__count">0 books saved</p>
+          </div>
+          <div id="favoritesGrid" class="favorites-list"></div>
+        </aside>
+      </main>
+
+      <footer class="site-footer">
+        <p>Powered by Open Library.</p>
+      </footer>
+    </div>
 
     <script type="module" src="/src/main.js"></script>
   </body>

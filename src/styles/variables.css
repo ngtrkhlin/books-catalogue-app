@@ -1,0 +1,32 @@
+:root,
+[data-theme='light'] {
+  --bg-color: #fdfcf8;
+  --card-bg: #ffffff;
+  --text-main: #1a1a1a;
+  --text-secondary: #666666;
+  --accent-color: #2d4a3e;
+  --accent-hover: #1f352c;
+  --favorite-red: #e63946;
+  --border-subtle: #e8e6e1;
+  --input-bg: #ffffff;
+  --shadow-card: 0 4px 20px rgba(45, 74, 62, 0.1);
+  --shadow-sidebar: 0 4px 24px rgba(45, 74, 62, 0.12);
+  --heart-outline: rgba(255, 255, 255, 0.95);
+  --overlay-scrim: linear-gradient(to top, rgba(26, 26, 26, 0.35), transparent 40%);
+}
+
+[data-theme='dark'] {
+  --bg-color: #121816;
+  --card-bg: #1c2622;
+  --text-main: #f0ede6;
+  --text-secondary: #9a9a93;
+  --accent-color: #6b9b87;
+  --accent-hover: #8bb8a3;
+  --favorite-red: #ff6b7a;
+  --border-subtle: #2d3834;
+  --input-bg: #24302b;
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.45);
+  --shadow-sidebar: 0 4px 28px rgba(0, 0, 0, 0.5);
+  --heart-outline: rgba(28, 38, 34, 0.95);
+  --overlay-scrim: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent 45%);
+}

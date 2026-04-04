@@ -1,0 +1,45 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg-color);
+  color: var(--text-main);
+  font-family: 'Source Sans 3', system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+.brand__title,
+.hero__heading {
+  font-family: 'Fraunces', Georgia, 'Times New Roman', serif;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.loading-text {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--accent-color);
+  margin-left: 0.5rem;
+}

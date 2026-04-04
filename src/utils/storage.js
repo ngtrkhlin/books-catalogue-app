@@ -1,5 +1,12 @@
 export function getFavorites() {
-    return JSON.parse(localStorage.getItem('favorites')) ||[];
+    try {
+        const raw = localStorage.getItem('favorites');
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch {
+        return [];
+    }
 }
 
 export function isFavorite(id) {
