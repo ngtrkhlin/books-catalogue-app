@@ -1,3 +1,5 @@
+// Fetches book search results from the Open Library public API
+
 export async function fetchBooks(query) {
   const response = await fetch(
     `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`

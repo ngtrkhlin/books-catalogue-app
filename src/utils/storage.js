@@ -1,9 +1,15 @@
-const KEY = 'favorites';
+// Persists the favorites list in localStorage.
+
+const FAVORITES_KEY = 'favorites';
 
 export function getFavorites() {
-  return JSON.parse(localStorage.getItem(KEY)) || [];
+  try {
+    return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+  } catch {
+    return [];
+  }
 }
 
 export function saveFavorites(list) {
-  localStorage.setItem(KEY, JSON.stringify(list));
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify(list));
 }
