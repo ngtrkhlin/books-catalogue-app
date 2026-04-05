@@ -1,96 +1,133 @@
-import { searchBooks } from './api/api.js';
-import { debounce } from './utils/utils.js';
-import { renderBooks, renderFavoriteRows } from './components/ui.js';
-import { getFavorites, toggleFavorite } from './utils/storage.js';
-
-import './styles/variables.css';
+import { fetchBooks } from './api/api.js';
+import { debounce } from './utils/debounce.js';
+import { getFavorites, saveFavorites } from './utils/storage.js';
 import './styles/base.css';
-import './styles/components.css';
 
-const savedTheme = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', savedTheme);
+const searchInput = document.querySelector('#searchInput');
+const searchBtn = document.querySelector('#searchBtn');
+const resultsEl = document.querySelector('#results');
+const favoritesListEl = document.querySelector('#favoritesList');
 
-const searchInput = document.getElementById('searchInput');
-const searchBtn = document.getElementById('searchBtn');
-const loadingText = document.getElementById('loadingText');
-const resultsGrid = document.getElementById('resultsGrid');
-const favoritesGrid = document.getElementById('favoritesGrid');
-const favoritesCount = document.getElementById('favoritesCount');
+let favorites = getFavorites();
 
-let currentSearchResults = [];
-
-function renderFavoritesSection() {
-    const favorites = getFavorites();
-    const n = favorites.length;
-    if (favoritesCount) {
-        favoritesCount.textContent = `${n} book${n === 1 ? '' : 's'} saved`;
-    }
-    renderFavoriteRows(favorites, favoritesGrid);
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
-renderFavoritesSection();
+function renderBooks(books) {
+  if (!resultsEl) return;
 
-document.addEventListener('click', (event) => {
-    const btn = event.target.closest('.favorite-heart, .favorite-row');
-    if (!btn || !btn.hasAttribute('data-book')) return;
+  resultsEl.innerHTML = books
+    .map(book => {
+      const coverUrl = book.cover_i
+        ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
+        : 'https://via.placeholder.com/200x300?text=No+Cover';
+      const inFavorites = favorites.some(f => f.key === book.key);
+      const btnLabel = inFavorites ? 'Saved' : '❤️ Add to Favorites';
 
-    const raw = btn.getAttribute('data-book');
-    let bookData;
-    try {
-        bookData = JSON.parse(raw);
-    } catch {
-        return;
-    }
+      return `
+      <article class="book-card">
+        <img src="${coverUrl}" alt="${escapeHtml(book.title)}" loading="lazy" />
+        <h3>${escapeHtml(book.title)}</h3>
+        <p>${escapeHtml(book.author_name ? book.author_name.join(', ') : 'Unknown Author')}</p>
+        <p>${escapeHtml(String(book.first_publish_year || 'N/A'))}</p>
+        <button type="button" class="fav-btn" data-key="${escapeHtml(book.key)}" ${inFavorites ? 'disabled' : ''}>${btnLabel}</button>
+      </article>
+    `;
+    })
+    .join('');
 
-    toggleFavorite(bookData);
-
-    renderFavoritesSection();
-    if (currentSearchResults.length > 0) {
-        renderBooks(currentSearchResults, resultsGrid);
-    }
-});
-
-async function handleSearch(event) {
-    const query = (event.target?.value ?? searchInput.value).trim();
-
-    if (!query) {
-        resultsGrid.innerHTML =
-            '<p class="placeholder-msg">Please enter a book title, author, or keyword.</p>';
-        currentSearchResults = [];
-        return;
-    }
-
-    loadingText.classList.remove('hidden');
-    resultsGrid.innerHTML = '';
-
-    const results = await searchBooks(query);
-
-    loadingText.classList.add('hidden');
-
-    if (!results) {
-        resultsGrid.innerHTML =
-            '<p class="error-msg">Network error. Please try again.</p>';
-        currentSearchResults = [];
-        return;
-    }
-
-    if (results.length === 0) {
-        resultsGrid.innerHTML = '<p class="placeholder-msg">Nothing found for this query.</p>';
-        currentSearchResults = [];
-        return;
-    }
-
-    currentSearchResults = results;
-    renderBooks(currentSearchResults, resultsGrid);
+  resultsEl.querySelectorAll('.fav-btn:not([disabled])').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.getAttribute('data-key');
+      const book = books.find(b => b.key === key);
+      addFavorite(book);
+    });
+  });
 }
 
-searchInput.addEventListener('input', debounce(handleSearch));
-searchBtn?.addEventListener('click', () => handleSearch({ target: searchInput }));
+function renderFavorites() {
+  if (!favoritesListEl) return;
 
-const themeToggle = document.getElementById('theme-toggle');
-themeToggle?.addEventListener('click', () => {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-});
+  if (favorites.length === 0) {
+    favoritesListEl.innerHTML = '<p class="favorite-empty">No saved books yet.</p>';
+    return;
+  }
+
+  favoritesListEl.innerHTML = favorites
+    .map(
+      book => `
+    <div class="favorite-item">
+      <span>${escapeHtml(book.title)}${book.author_name?.[0] ? ` (${escapeHtml(book.author_name[0])})` : ''}</span>
+      <button type="button" class="remove-fav" data-key="${escapeHtml(book.key)}" aria-label="Remove">✕</button>
+    </div>
+  `
+    )
+    .join('');
+
+  favoritesListEl.querySelectorAll('.remove-fav').forEach(btn => {
+    btn.addEventListener('click', () => {
+      removeFavorite(btn.getAttribute('data-key'));
+    });
+  });
+}
+
+function addFavorite(book) {
+  if (!book || favorites.some(f => f.key === book.key)) return;
+  favorites.push(book);
+  saveFavorites(favorites);
+  renderFavorites();
+  const btn = [...(resultsEl?.querySelectorAll('.fav-btn') ?? [])].find(b => b.dataset.key === book.key);
+  if (btn) {
+    btn.textContent = 'Saved';
+    btn.disabled = true;
+  }
+}
+
+function removeFavorite(key) {
+  if (key == null) return;
+  favorites = favorites.filter(f => f.key !== key);
+  saveFavorites(favorites);
+  renderFavorites();
+  const btn = [...(resultsEl?.querySelectorAll('.fav-btn') ?? [])].find(b => b.dataset.key === key);
+  if (btn) {
+    btn.textContent = '❤️ Add to Favorites';
+    btn.disabled = false;
+  }
+}
+
+async function handleSearch() {
+  if (!resultsEl || !searchInput) return;
+
+  const q = searchInput.value.trim();
+  if (!q) {
+    resultsEl.innerHTML = '<p>Enter a title or author to search.</p>';
+    return;
+  }
+
+  resultsEl.innerHTML = '<p>Loading…</p>';
+
+  try {
+    const books = await fetchBooks(q);
+
+    if (!books || books.length === 0) {
+      resultsEl.innerHTML = '<p>No results found for that search.</p>';
+      return;
+    }
+
+    renderBooks(books.slice(0, 20));
+  } catch {
+    resultsEl.innerHTML = '<p>Search failed. Check your connection.</p>';
+  }
+}
+
+searchBtn?.addEventListener('click', handleSearch);
+searchInput?.addEventListener('input', debounce(handleSearch, 600));
+
+renderFavorites();
