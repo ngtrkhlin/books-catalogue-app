@@ -2,7 +2,10 @@
 
 ## Task
 
-Add your course assignment (PDF or LMS) link here before submitting.
+[Assignment PDF](https://drive.google.com/file/d/1swszcMU9rF_-zRJaA2VchPuU_d7yrAbs/view)
+
+**Live demo:** [your-app.vercel.app](https://your-app.vercel.app)
+
 
 ## How to run
 

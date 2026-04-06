@@ -3,7 +3,10 @@
 import { fetchBooks } from './api/api.js';
 import { getFavorites, saveFavorites } from './utils/storage.js';
 import bookIcon from './assets/book.svg';
+import heartIcon from './assets/heart.svg';
 import './styles/base.css';
+
+document.getElementById('headerLogo')?.setAttribute('src', bookIcon);
 
 const searchInput = document.querySelector('#searchInput');
 const searchBtn = document.querySelector('#searchBtn');
@@ -52,6 +55,13 @@ function applyAuthorFilter() {
 
 authorFilter?.addEventListener('change', applyAuthorFilter);
 
+function favButtonHtml(inFavorites) {
+  if (inFavorites) {
+    return 'Saved';
+  }
+  return `<img src="${heartIcon}" alt="heart" class="heart-icon"> Favorite`;
+}
+
 function renderBooks(books) {
   if (!resultsEl) return;
 
@@ -69,7 +79,7 @@ function renderBooks(books) {
         <h3>${book.title ?? ''}</h3>
         <p>${book.author_name ? book.author_name.join(', ') : 'Unknown author'}</p>
         <p>${book.first_publish_year ?? 'N/A'}</p>
-        <button type="button" class="fav-btn" data-key="${book.key}" ${inFavorites ? 'disabled' : ''}>Add to Favorites</button>
+        <button type="button" class="fav-btn" data-key="${book.key}" ${inFavorites ? 'disabled' : ''}>${favButtonHtml(inFavorites)}</button>
       </article>
     `;
     })
@@ -96,6 +106,9 @@ function renderFavorites() {
     .map(
       book => `
     <div class="favorite-item">
+    <img src="${book.cover_i
+        ? `https://covers.openlibrary.org/b/id/${book.cover_i}.jpg`
+        : bookIcon}" alt="" loading="lazy" />
       <span>${book.title ?? ''}</span>
       <button type="button" class="remove-fav" data-key="${book.key}">Remove</button>
     </div>
@@ -160,6 +173,7 @@ async function handleSearch() {
 }
 
 searchBtn?.addEventListener('click', handleSearch);
+searchInput?.addEventListener('keydown', e => { if (e.key === 'Enter') handleSearch(); });
 
 resetAuthorFilter();
 renderFavorites();

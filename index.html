@@ -6,27 +6,29 @@
     <title>Book Catalogue</title>
   </head>
   <body>
-    <header>
-      <h1>Book Catalogue</h1>
+    <header class="header">
+      <div class="logo">
+        <!-- src set by main.js so Vite hashes the asset in production -->
+        <img id="headerLogo" src="" alt="logo" width="28" height="28" />
+        <h1>Book Catalogue</h1>
+      </div>
+      <p class="subtitle">Your Reading Journey Begins Here</p>
     </header>
 
-    <section class="search-section">
-      <div class="search-controls">
-        <div class="search-bar" role="search">
-          <input
-            type="search"
-            id="searchInput"
-            placeholder="Search by title, author, or keyword"
-            autocomplete="off"
-          />
-          <button type="button" id="searchBtn">Find</button>
-        </div>
-        <div class="author-filter-row">
-          <label class="author-filter-label" for="authorFilter">Author</label>
-          <select id="authorFilter" disabled aria-label="Filter by author">
-            <option value="all">All authors</option>
-          </select>
-        </div>
+    <section class="hero">
+      <h2>Step Into Your Next Story</h2>
+      <p>Browse thousands of books, save your favorites, and build your perfect library.</p>
+
+      <div class="search-bar">
+        <input id="searchInput" type="text" placeholder="Search for books by title, author, or keyword..." autocomplete="off" />
+        <button id="searchBtn">Find</button>
+      </div>
+
+      <div class="filter-row">
+        <label for="authorFilter">Filter by author</label>
+        <select id="authorFilter" aria-label="Filter by author">
+          <option value="all">All authors</option>
+        </select>
       </div>
     </section>
 
@@ -39,7 +41,7 @@
     </div>
 
     <footer>
-      <p>Open Library</p>
+      <p>Powered by Open Library</p>
     </footer>
 
     <script type="module" src="/src/main.js"></script>

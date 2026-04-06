@@ -1,10 +1,12 @@
+/* ----- BASE ----- */
 :root {
-  --bg: #f5f5f5;
+  --green: #056b42;
+  --green-dark: #045534;
+  --red: #e63946;
+  --red-dark: #c92d3a;
   --surface: #fff;
-  --text: #222;
-  --muted: #555;
   --border: #ccc;
-  --accent: #333;
+  --muted: #666;
 }
 
 * {
@@ -12,91 +14,146 @@
 }
 
 body {
+  font-family: system-ui, sans-serif;
+  background: #fafafa;
+  color: #1f1f1f;
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
-header {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-
-header h1 {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.search-section {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-
-.search-controls {
+/* ----- HEADER ----- */
+.header {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.75rem;
-  max-width: 720px;
+  padding: 0.75rem 2rem;
+  background: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo img {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.logo h1 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #1f1f1f;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* ----- HERO / SEARCH SECTION ----- */
+.hero {
+  text-align: center;
+  padding: 2.5rem 1rem 2rem;
+  background: #f9fafb;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.hero h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #1f1f1f;
+}
+
+.hero > p {
+  margin: 0 auto 1.5rem;
+  max-width: 480px;
+  font-size: 0.95rem;
+  color: var(--muted);
 }
 
 .search-bar {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  justify-content: center;
   align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
 }
 
 .search-bar input {
-  min-width: 200px;
-  padding: 0.5rem 0.65rem;
+  padding: 0.6rem 1rem;
+  width: 360px;
+  max-width: 90vw;
   border: 1px solid var(--border);
-  font: inherit;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-family: inherit;
 }
 
-.search-bar button {
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  font: inherit;
+.search-bar input:focus {
+  outline: 2px solid var(--green);
+  outline-offset: 1px;
+}
+
+#searchBtn {
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.3rem;
   cursor: pointer;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: 600;
+  transition: background 0.2s;
 }
 
-.author-filter-row {
+#searchBtn:hover {
+  background: var(--green-dark);
+}
+
+.filter-row {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
-.author-filter-label {
+.filter-row label {
   font-size: 0.9rem;
   color: var(--muted);
 }
 
 #authorFilter {
   min-width: 180px;
-  padding: 0.4rem 0.5rem;
+  max-width: 90vw;
+  padding: 0.4rem 0.6rem;
   border: 1px solid var(--border);
+  border-radius: 6px;
   font: inherit;
+  font-size: 0.9rem;
   background: var(--surface);
 }
 
 #authorFilter:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* ----- MAIN: results grid + sidebar ----- */
 .main {
   display: flex;
   align-items: flex-start;
   gap: 1.5rem;
-  padding: 1rem 1.5rem 2rem;
+  padding: 1.25rem 2rem 3rem;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -109,6 +166,7 @@ header h1 {
   min-width: 0;
 }
 
+/* ----- BOOK CARD ----- */
 .book-card {
   border: 1px solid var(--border);
   background: var(--surface);
@@ -116,6 +174,7 @@ header h1 {
   display: flex;
   flex-direction: column;
   text-align: center;
+  border-radius: 6px;
 }
 
 .book-card__cover {
@@ -123,6 +182,7 @@ header h1 {
   height: 200px;
   object-fit: cover;
   background: #e8e8e8;
+  border-radius: 4px 4px 0 0;
 }
 
 .book-card__cover--placeholder {
@@ -132,34 +192,58 @@ header h1 {
 
 .book-card h3 {
   margin: 0.5rem 0 0;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
 .book-card p {
   margin: 0.2rem 0;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--muted);
 }
 
+/* ----- FAVORITE BUTTON WITH HEART ----- */
 .fav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   margin-top: 0.5rem;
-  padding: 0.35rem 0.5rem;
-  font: inherit;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-family: inherit;
   cursor: pointer;
-  border: 1px solid var(--border);
-  background: var(--surface);
+  transition: background 0.2s;
+}
+
+.fav-btn:hover:not(:disabled) {
+  background: var(--red-dark);
 }
 
 .fav-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.7;
   cursor: default;
 }
 
+.heart-icon {
+  width: 14px;
+  height: 14px;
+  filter: brightness(0) invert(1);
+}
+
+/* ----- FAVORITES SIDEBAR ----- */
 #favorites {
-  width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 250px;
   flex-shrink: 0;
   border: 1px solid var(--border);
+  border-radius: 6px;
   background: var(--surface);
   padding: 0.75rem 1rem;
 }
@@ -167,20 +251,29 @@ header h1 {
 #favorites h3 {
   margin: 0 0 0.5rem;
   font-size: 1rem;
+  font-weight: 600;
+}
+.favorite-item {
+  display: flex;       
+  align-items: center; 
+  gap: 0.5rem;         
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
 }
 
-.favorite-item {
+.favorite-item img {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 0.5rem;
-  padding: 0.4rem 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 0.9rem;
+  width: 40px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 3px;
+  flex-shrink: 0;
 }
 
 .favorite-item span {
+  flex: 1;             
   min-width: 0;
+  font-size: 0.88rem;
   word-break: break-word;
 }
 
@@ -190,7 +283,8 @@ header h1 {
   border: none;
   background: none;
   font: inherit;
-  color: var(--accent);
+  font-size: 0.85rem;
+  color: var(--red);
   text-decoration: underline;
   cursor: pointer;
 }
@@ -200,11 +294,32 @@ footer {
   padding: 1rem;
   font-size: 0.85rem;
   color: var(--muted);
+  border-top: 1px solid #e0e0e0;
 }
 
+/* ----- RESPONSIVE ----- */
 @media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.75rem 1rem;
+  }
+
+  .hero {
+    padding: 1.5rem 1rem;
+  }
+
+  .hero h2 {
+    font-size: 1.3rem;
+  }
+
+  .search-bar input {
+    width: 100%;
+  }
+
   .main {
     flex-direction: column;
+    padding: 1rem;
   }
 
   #favorites {
