@@ -1,11 +1,28 @@
 # Book Catalogue
 
 ## Task
-
 [Assignment PDF](https://drive.google.com/file/d/1swszcMU9rF_-zRJaA2VchPuU_d7yrAbs/view)
 
-**Live demo:** **Live demo:** [books-catalogue-app.vercel.app](https://books-catalogue-app.vercel.app)
+## Live Demo
+[books-catalogue-app.vercel.app](https://books-catalogue-app.vercel.app)
 
+---
+
+## Description
+A simple web application built with **HTML, CSS, and Vanilla JavaScript** that allows users to search for books using the Open Library API and save their favorite books using localStorage.
+
+---
+
+## Features
+- Search books by title, author, or keyword
+- Display results as cards (cover, title, author, year)
+- Handle loading, empty input, and error states
+- Add and remove books from favorites
+- Favorites persist using localStorage
+- Filter results by author
+- Responsive layout for desktop and mobile
+
+---
 
 ## How to run
 
@@ -14,17 +31,14 @@ npm install
 npm run dev
 npm run build
 npm run preview
-```
 
-Production output is written to `dist/` (`index.html`, bundled JS and CSS, and `assets/` including `book.svg`).
+## Folder stucture
+src/
+ ├── api/        # Open Library fetch logic
+ ├── utils/      # localStorage helper
+ ├── styles/     # CSS layout and responsiveness
+ ├── assets/     # SVG icons
+ └── main.js     # Main app logic
 
-## Folder structure
-
-| Path | Contents |
-|------|----------|
-| `src/api/` | Open Library `fetch` |
-| `src/utils/` | `localStorage` favorites helper |
-| `src/styles/` | Layout and responsive CSS |
-| `src/assets/` | `book.svg` (missing cover placeholder) |
-| `src/main.js` | Search, author filter, cards, favorites |
-| `index.html` | Page shell |
+index.html       # Main HTML file
+vite.config.js   # Vite configuration
