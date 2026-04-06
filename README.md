@@ -9,17 +9,19 @@
 ---
 
 ## Description
-A simple web application built with **HTML, CSS, and Vanilla JavaScript** that allows users to search for books using the Open Library API and save their favorite books using localStorage.
+A simple web application built with **HTML, CSS, and Vanilla JavaScript** that allows users to search for books using the Open Library API, filter results by author, toggle between light and dark themes, and save favorite books using localStorage.
 
 ---
 
 ## Features
 - Search books by title, author, or keyword
+- On-the-fly search with debounce (600 ms delay)
 - Display results as cards (cover, title, author, year)
 - Handle loading, empty input, and error states
+- Filter results by author
 - Add and remove books from favorites
 - Favorites persist using localStorage
-- Filter results by author
+- Light / dark theme toggle — preference saved across reloads
 - Responsive layout for desktop and mobile
 
 ---
@@ -27,18 +29,48 @@ A simple web application built with **HTML, CSS, and Vanilla JavaScript** that a
 ## How to run
 
 ```bash
-npm install
-npm run dev
-npm run build
-npm run preview
+npm install       # install dependencies
+npm run dev       # start development server
+npm run build     # production build → dist/
+npm run preview   # preview the production build locally
+npm test          # run unit tests
+```
 
-## Folder stucture
+---
+
+## Testing
+
+Unit tests are written with [Vitest](https://vitest.dev/) and run in a simulated browser environment (`jsdom`).
+
+```bash
+npm test
+```
+
+| File | What is tested |
+|------|---------------|
+| `src/api/api.test.js` | fetchBooks returns results, handles empty response, throws on network error |
+| `src/utils/storage.test.js` | getFavorites defaults, save/load round-trip, corrupt JSON safety, theme persistence |
+
+---
+
+## Folder structure
+
+```
 src/
- ├── api/        # Open Library fetch logic
- ├── utils/      # localStorage helper
- ├── styles/     # CSS layout and responsiveness
- ├── assets/     # SVG icons
- └── main.js     # Main app logic
+ ├── api/
+ │    ├── api.js          # Open Library fetch logic
+ │    └── api.test.js     # Unit tests for the API helper
+ ├── utils/
+ │    ├── storage.js      # localStorage helpers (favorites + theme)
+ │    └── storage.test.js # Unit tests for storage helpers
+ ├── styles/
+ │    └── base.css        # Layout, theme, and responsive CSS
+ ├── assets/
+ │    ├── book.svg        # Logo and missing-cover placeholder
+ │    ├── heart.svg       # Favorites button icon
+ │    └── search.svg      # Search input icon
+ └── main.js              # Main app logic (search, render, favorites, theme)
 
-index.html       # Main HTML file
-vite.config.js   # Vite configuration
+index.html                # App shell
+vite.config.js            # Vite + Vitest configuration
+```
