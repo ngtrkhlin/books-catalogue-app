@@ -1,6 +1,11 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  // Vitest configuration — runs unit tests with a simulated browser environment
+  test: {
+    environment: 'jsdom',
+  },
+
   build: {
     outDir: 'dist',
     assetsDir: 'assets',

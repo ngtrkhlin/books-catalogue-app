@@ -136,7 +136,7 @@ function renderFavorites() {
     countEl.textContent = favorites.length > 0
       ? `Favorites (${favorites.length})`
       : 'Favorites';
-  }
+  } 
 
   if (favorites.length === 0) {
     favoritesListEl.innerHTML = '';
