@@ -54,6 +54,19 @@ body {
   margin: 0;
   font-size: 0.9rem;
   color: var(--muted);
+  flex: 1; 
+}
+
+/* ----- THEME TOGGLE BUTTON ----- */
+.theme-btn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  line-height: 1;
 }
 
 /* ----- HERO / SEARCH SECTION ----- */
@@ -164,6 +177,90 @@ body {
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 1rem;
   min-width: 0;
+}
+
+/* ----- DARK MODE ----- */
+/* When body has the class "dark", these variables override the light ones above */
+body.dark {
+  background: #1a1a2e;
+  color: #e0e0e0;
+}
+
+body.dark .header {
+  background: #16213e;
+  border-color: #0f3460;
+}
+
+body.dark .logo h1 {
+  color: #e0e0e0;
+}
+
+body.dark .subtitle {
+  color: #a0a0b0;
+}
+
+body.dark .theme-btn {
+  border-color: #0f3460;
+  color: #e0e0e0;
+}
+
+body.dark .hero {
+  background: #16213e;
+  border-color: #0f3460;
+}
+
+body.dark .hero h2 {
+  color: #e0e0e0;
+}
+
+body.dark .hero > p {
+  color: #a0a0b0;
+}
+
+body.dark .search-bar input,
+body.dark #authorFilter {
+  background: #0f3460;
+  border-color: #e94560;
+  color: #e0e0e0;
+}
+
+body.dark .filter-row label {
+  color: #a0a0b0;
+}
+
+body.dark .book-card {
+  background: #16213e;
+  border-color: #0f3460;
+}
+
+body.dark .book-card h3 {
+  color: #e0e0e0;
+}
+
+body.dark .book-card p {
+  color: #a0a0b0;
+}
+
+body.dark #favorites {
+  background: #16213e;
+  border-color: #0f3460;
+}
+
+body.dark #favorites h3 {
+  color: #e0e0e0;
+}
+
+body.dark .favorite-item {
+  border-color: #0f3460;
+}
+
+body.dark .favorite-item span {
+  color: #e0e0e0;
+}
+
+body.dark footer {
+  border-color: #0f3460;
+  color: #a0a0b0;
 }
 
 /* ----- BOOK CARD ----- */

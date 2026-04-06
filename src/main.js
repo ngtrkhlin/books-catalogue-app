@@ -1,22 +1,59 @@
-// Search, author filter, book cards, and favorites UI.
+// Search, author filter, book cards, favorites, theme toggle, and debounced search.
 
 import { fetchBooks } from './api/api.js';
-import { getFavorites, saveFavorites } from './utils/storage.js';
+import { getFavorites, saveFavorites, getSavedTheme, saveTheme } from './utils/storage.js';
 import bookIcon from './assets/book.svg';
 import heartIcon from './assets/heart.svg';
 import './styles/base.css';
 
 document.getElementById('headerLogo')?.setAttribute('src', bookIcon);
 
-const searchInput = document.querySelector('#searchInput');
-const searchBtn = document.querySelector('#searchBtn');
-const resultsEl = document.querySelector('#results');
+// ─── DOM references ───────────────────────────────────────────────────────────
+const searchInput  = document.querySelector('#searchInput');
+const searchBtn    = document.querySelector('#searchBtn');
+const resultsEl    = document.querySelector('#results');
 const favoritesListEl = document.querySelector('#favoritesList');
 const authorFilter = document.querySelector('#authorFilter');
+const themeBtn     = document.querySelector('#themeBtn');
 
+// ─── State ────────────────────────────────────────────────────────────────────
 let favorites = getFavorites();
 let lastFetchedBooks = [];
 
+// ─── Theme toggle ─────────────────────────────────────────────────────────────
+// Apply the saved theme immediately when the page loads
+applyTheme(getSavedTheme());
+
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.body.classList.add('dark');
+    if (themeBtn) themeBtn.textContent = '☀️'; // show sun icon in dark mode
+  } else {
+    document.body.classList.remove('dark');
+    if (themeBtn) themeBtn.textContent = '🌙'; // show moon icon in light mode
+  }
+}
+
+// When the user clicks the theme button, flip between light and dark
+themeBtn?.addEventListener('click', () => {
+  const currentTheme = document.body.classList.contains('dark') ? 'dark' : 'light';
+  const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme(nextTheme);
+  saveTheme(nextTheme); // remember the choice after reload
+});
+
+// ─── Debounce helper ──────────────────────────────────────────────────────────
+// Debounce means: "wait until the user stops typing before running the search".
+// How it works: every keystroke clears the previous timer and starts a new one.
+// The search only runs when the timer actually finishes (600 ms of no typing).
+let debounceTimer;
+
+function runSearchAfterDelay() {
+  clearTimeout(debounceTimer);                  // cancel the previous timer
+  debounceTimer = setTimeout(handleSearch, 600); // start a new 600 ms timer
+}
+
+// ─── Author filter helpers ────────────────────────────────────────────────────
 function resetAuthorFilter() {
   if (!authorFilter) return;
   authorFilter.innerHTML = '<option value="all">All authors</option>';
@@ -49,12 +86,9 @@ function renderResultsFromState() {
   renderBooks(getBooksForDisplay().slice(0, 20));
 }
 
-function applyAuthorFilter() {
-  renderResultsFromState();
-}
+authorFilter?.addEventListener('change', renderResultsFromState);
 
-authorFilter?.addEventListener('change', applyAuthorFilter);
-
+// ─── Render book cards ────────────────────────────────────────────────────────
 function favButtonHtml(inFavorites) {
   if (inFavorites) {
     return 'Saved';
@@ -94,6 +128,7 @@ function renderBooks(books) {
   });
 }
 
+// ─── Render favorites sidebar ─────────────────────────────────────────────────
 function renderFavorites() {
   if (!favoritesListEl) return;
 
@@ -103,17 +138,15 @@ function renderFavorites() {
   }
 
   favoritesListEl.innerHTML = favorites
-    .map(
-      book => `
+    .map(book => `
     <div class="favorite-item">
-    <img src="${book.cover_i
+      <img src="${book.cover_i
         ? `https://covers.openlibrary.org/b/id/${book.cover_i}.jpg`
         : bookIcon}" alt="" loading="lazy" />
       <span>${book.title ?? ''}</span>
       <button type="button" class="remove-fav" data-key="${book.key}">Remove</button>
     </div>
-  `
-    )
+  `)
     .join('');
 
   favoritesListEl.querySelectorAll('.remove-fav').forEach(btn => {
@@ -123,6 +156,7 @@ function renderFavorites() {
   });
 }
 
+// ─── Add / remove favorites ───────────────────────────────────────────────────
 function addFavorite(book) {
   if (!book || favorites.some(f => f.key === book.key)) return;
   favorites.push(book);
@@ -139,6 +173,7 @@ function removeFavorite(key) {
   renderResultsFromState();
 }
 
+// ─── Search ───────────────────────────────────────────────────────────────────
 async function handleSearch() {
   if (!resultsEl || !searchInput) return;
 
@@ -172,8 +207,17 @@ async function handleSearch() {
   }
 }
 
+// Find button click → search immediately
 searchBtn?.addEventListener('click', handleSearch);
-searchInput?.addEventListener('keydown', e => { if (e.key === 'Enter') handleSearch(); });
 
+// Enter key → search immediately
+searchInput?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSearch();
+});
+
+// Typing in the input → search automatically after 600 ms of no typing (debounce)
+searchInput?.addEventListener('input', runSearchAfterDelay);
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
 resetAuthorFilter();
 renderFavorites();
