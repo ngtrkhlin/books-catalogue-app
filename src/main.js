@@ -21,7 +21,7 @@ let favorites = getFavorites();
 let lastFetchedBooks = [];
 
 // ─── Theme toggle ─────────────────────────────────────────────────────────────
-// Apply the saved theme immediately when the page loads
+// Apply the saved theme when the page loads
 applyTheme(getSavedTheme());
 
 function applyTheme(theme) {
@@ -43,10 +43,8 @@ themeBtn?.addEventListener('click', () => {
 });
 
 // ─── Debounce helper ──────────────────────────────────────────────────────────
-// Debounce means: "wait until the user stops typing before running the search".
-// How it works: every keystroke clears the previous timer and starts a new one.
-// The search only runs when the timer actually finishes (600 ms of no typing).
-let debounceTimer;
+// The search runs when the timer reach 600 ms of no typing.
+let debounceTimer
 
 function runSearchAfterDelay() {
   clearTimeout(debounceTimer);                  // cancel the previous timer
@@ -131,6 +129,14 @@ function renderBooks(books) {
 // ─── Render favorites sidebar ─────────────────────────────────────────────────
 function renderFavorites() {
   if (!favoritesListEl) return;
+
+  // show how many books are saved
+  const countEl = document.querySelector('#favorites h3');
+  if (countEl) {
+    countEl.textContent = favorites.length > 0
+      ? `Favorites (${favorites.length})`
+      : 'Favorites';
+  }
 
   if (favorites.length === 0) {
     favoritesListEl.innerHTML = '';

@@ -15,12 +15,12 @@ export function saveFavorites(list) {
   localStorage.setItem(FAVORITES_KEY, JSON.stringify(list));
 }
 
-// Returns the saved theme: 'dark' or 'light' (defaults to 'light')
+// Returns the saved theme: dark/light (default: light)
 export function getSavedTheme() {
   return localStorage.getItem(THEME_KEY) || 'light';
 }
 
-// Saves the chosen theme so it survives a page reload
+// Saves the chosen theme for next page reload
 export function saveTheme(theme) {
   localStorage.setItem(THEME_KEY, theme);
 }
